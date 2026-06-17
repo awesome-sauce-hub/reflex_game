@@ -18,6 +18,7 @@ if (!playerName) {
 
 function setState(newState) {
     state = newState;
+    document.body.dataset.state = newState;
 
     if (state === "idle") { // Initial state
         arena.style.background = "#14171b";

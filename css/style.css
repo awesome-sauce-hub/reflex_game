@@ -1,53 +1,153 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --go:     #00ff88;
+    --fail:   #ff3a3a;
+    --result: #3a8fff;
+    --armed:  #cc3333;
+    --muted:  #4a5060;
+}
+
 body {
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: sans-serif;
+    padding: clamp(24px, 5vw, 48px) 16px;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
     background: #0b0d10;
     color: #e8eaed;
 }
 
+h1 {
+    font-size: clamp(16px, 4vw, 22px);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: normal;
+    margin-bottom: 32px;
+}
+
+#readout {
+    font-size: clamp(44px, 12vw, 72px);
+    letter-spacing: 0.05em;
+    margin-bottom: 32px;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+body[data-state="go"]     #readout { color: var(--go); }
+body[data-state="result"] #readout { color: var(--result); text-shadow: 0 0 20px rgba(58, 143, 255, 0.4); }
+
 #arena {
-    width: 280px;
-    height: 280px;
+    width: min(300px, 80vw);
+    height: min(300px, 80vw);
     border-radius: 50%;
-    background: #14171b;
-    border: 2px solid #232830;
+    border: 2px solid rgba(255, 255, 255, 0.07);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     user-select: none;
+    transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+body[data-state="armed"] #arena {
+    box-shadow: 0 0 30px 8px rgba(255, 50, 50, 0.30);
+}
+
+body[data-state="go"] #arena {
+    box-shadow: 0 0 40px 12px rgba(0, 255, 136, 0.5), 0 0 80px 24px rgba(0, 255, 136, 0.2);
+    animation: pulse-go 0.9s ease-in-out infinite;
+}
+
+body[data-state="fail"] #arena {
+    box-shadow: 0 0 30px 8px rgba(255, 50, 50, 0.5);
+    animation: shake 0.4s ease-out;
+}
+
+body[data-state="result"] #arena {
+    box-shadow: 0 0 25px 8px rgba(58, 143, 255, 0.25);
 }
 
 #signal-text {
-    font-size: 20px;
-    color: #7a8088;
+    font-size: 18px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    transition: color 0.3s ease;
 }
 
-#readout {
-    font-size: 48px;
-    font-weight: bold;
-    margin-bottom: 24px;
+body[data-state="go"]     #signal-text { color: var(--go); }
+body[data-state="armed"]  #signal-text { color: var(--armed); }
+body[data-state="fail"]   #signal-text { color: var(--fail); }
+body[data-state="result"] #signal-text { color: var(--result); }
+
+@keyframes pulse-go {
+    0%, 100% {
+        box-shadow: 0 0 40px 12px rgba(0, 255, 136, 0.5), 0 0 80px 24px rgba(0, 255, 136, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 60px 20px rgba(0, 255, 136, 0.7), 0 0 100px 36px rgba(0, 255, 136, 0.3);
+    }
+}
+
+@keyframes shake {
+    0%   { transform: translateX(0); }
+    20%  { transform: translateX(-8px); }
+    40%  { transform: translateX(8px); }
+    60%  { transform: translateX(-5px); }
+    80%  { transform: translateX(5px); }
+    100% { transform: translateX(0); }
 }
 
 #leaderboard {
-    margin-top: 32px;
-    width: 280px;
+    margin-top: 48px;
+    width: min(300px, 90vw);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 24px;
 }
 
 #leaderboard h2 {
-    font-size: 16px;
-    color: #7a8088;
-    margin-bottom: 8px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
 }
 
 #leaderboard-list {
-    padding-left: 24px;
+    list-style: none;
+    padding: 0;
 }
 
 #leaderboard-list li {
-    font-family: 'Courier New', monospace;
-    font-size: 15px;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    font-size: 14px;
+    padding: 10px 12px;
     margin-bottom: 4px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid transparent;
+    color: #7a8088;
+}
+
+#leaderboard-list li:nth-child(1) {
+    border-left-color: #ffd700;
+    color: #e8eaed;
+    background: rgba(255, 215, 0, 0.06);
+}
+
+#leaderboard-list li:nth-child(2) {
+    border-left-color: #c0c0c0;
+    color: #c8cad0;
+    background: rgba(192, 192, 192, 0.04);
+}
+
+#leaderboard-list li:nth-child(3) {
+    border-left-color: #cd7f32;
+    color: #b0a090;
+    background: rgba(205, 127, 50, 0.04);
 }
