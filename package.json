@@ -1,0 +1,27 @@
+{
+  "name": "reflex_game",
+  "version": "1.0.0",
+  "description": "Work in progress. Currently building:",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/awesome-sauce-hub/reflex_game.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/awesome-sauce-hub/reflex_game/issues"
+  },
+  "homepage": "https://github.com/awesome-sauce-hub/reflex_game#readme",
+  "devDependencies": {
+    "vite": "^8.0.16"
+  },
+  "dependencies": {
+    "firebase": "^12.15.0"
+  }
+}
