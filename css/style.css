@@ -9,7 +9,7 @@
     --fail:   #ff3a3a;
     --result: #3a8fff;
     --armed:  #cc3333;
-    --muted:  #4a5060;
+    --muted:  #8a939e;
 }
 
 body {
@@ -19,6 +19,7 @@ body {
     align-items: center;
     padding: clamp(24px, 5vw, 48px) 16px;
     font-family: 'Share Tech Mono', 'Courier New', monospace;
+    line-height: 1.5;
     background: #0b0d10;
     color: #e8eaed;
 }
@@ -35,8 +36,9 @@ h1 {
 #readout {
     font-size: clamp(44px, 12vw, 72px);
     letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
     margin-bottom: 32px;
-    transition: color 0.3s ease, text-shadow 0.3s ease;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
 body[data-state="go"]     #readout { color: var(--go); }
@@ -52,7 +54,8 @@ body[data-state="result"] #readout { color: var(--result); text-shadow: 0 0 20px
     justify-content: center;
     cursor: pointer;
     user-select: none;
-    transition: background 0.4s ease, box-shadow 0.4s ease;
+    touch-action: manipulation;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
 body[data-state="armed"] #arena {
@@ -61,7 +64,7 @@ body[data-state="armed"] #arena {
 
 body[data-state="go"] #arena {
     box-shadow: 0 0 40px 12px rgba(0, 255, 136, 0.5), 0 0 80px 24px rgba(0, 255, 136, 0.2);
-    animation: pulse-go 0.9s ease-in-out infinite;
+    animation: pulse-go 0.6s ease-out infinite alternate;
 }
 
 body[data-state="fail"] #arena {
@@ -111,7 +114,7 @@ body[data-state="result"] #signal-text { color: var(--result); }
 }
 
 #leaderboard h2 {
-    font-size: 11px;
+    font-size: 13px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--muted);
@@ -150,4 +153,31 @@ body[data-state="result"] #signal-text { color: var(--result); }
     border-left-color: #cd7f32;
     color: #b0a090;
     background: rgba(205, 127, 50, 0.04);
+}
+
+#leaderboard-empty {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 10px 12px;
+}
+
+#arena:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.4);
+    outline-offset: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #arena,
+    #readout,
+    #signal-text {
+        transition: none;
+    }
+
+    body[data-state="go"] #arena {
+        animation: none;
+    }
+
+    body[data-state="fail"] #arena {
+        animation: none;
+    }
 }

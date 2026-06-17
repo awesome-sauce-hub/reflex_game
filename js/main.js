@@ -16,31 +16,40 @@ if (!playerName) {
     localStorage.setItem("playerName", playerName);
 }
 
+const ariaLabels = {
+    idle:   "Reflex arena. Tap to start.",
+    armed:  "Reflex arena. Wait for green.",
+    go:     "Reflex arena. Tap now!",
+    fail:   "Reflex arena. Too soon. Tap to retry.",
+    result: "Reflex arena. Tap to retry."
+};
+
 function setState(newState) {
     state = newState;
     document.body.dataset.state = newState;
+    arena.setAttribute("aria-label", ariaLabels[newState]);
 
-    if (state === "idle") { // Initial state
+    if (state === "idle") {
         arena.style.background = "#14171b";
         signalText.textContent = "TAP TO START";
     }
 
-    if (state === "armed") { // Waiting for the "go" signal
+    if (state === "armed") {
         arena.style.background = "#2a1414";
         signalText.textContent = "WAIT...";
     }
 
-    if (state === "go") { // "Go" signal is shown, player should tap now
+    if (state === "go") {
         arena.style.background = "#0f3322";
         signalText.textContent = "TAP NOW";
     }
 
-    if (state === "fail") { // Player tapped too early
+    if (state === "fail") {
         arena.style.background = "#2a1414";
         signalText.textContent = "TOO SOON";
     }
 
-    if (state === "result") { // Round result
+    if (state === "result") {
         arena.style.background = "#14171b";
         signalText.textContent = "TAP TO RETRY";
     }
@@ -62,6 +71,13 @@ function saveScore(time) {
         }
     });
 }
+
+arena.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        arena.click();
+    }
+});
 
 arena.addEventListener("click", function () {
     if (state === "idle" || state === "fail" || state === "result") {
@@ -104,7 +120,7 @@ function listenForScores() {
         const data = snapshot.val();
 
         if (!data) {
-            leaderboardList.innerHTML = "";
+            leaderboardList.innerHTML = '<li id="leaderboard-empty">No scores yet. Be first.</li>';
             return;
         }
 
