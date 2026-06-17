@@ -4,9 +4,9 @@
 
 Work in progress. Currently building:
 
-- [ ] Core reaction test (wait for green, tap, measure ms)
+- [x] Core reaction test (wait for green, tap, measure ms)
 - [ ] Personal best tracking
-- [ ] Shared leaderboard
+- [x] Shared leaderboard
 - [ ] Daily challenge mode
 - [ ] 1v1 room-code battles
 
