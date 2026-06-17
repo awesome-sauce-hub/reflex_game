@@ -1,0 +1,15 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.vscode/
+.idea/
+
+# Node (in case we add tooling later)
+node_modules/
+npm-debug.log*
+
+# Env files (never commit secrets/API keys)
+.env
+.env.local
