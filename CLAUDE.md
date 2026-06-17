@@ -36,11 +36,21 @@ Five states managed by `setState()`: `idle → armed → go → result` (or `arm
 - `result`: reaction time displayed in `#readout`, score saved to Firebase
 - `fail`: tapped during `armed`, reset on next tap
 
+`setState()` sets both `arena.style.background` (inline) and `document.body.dataset.state`. The `data-state` attribute is the CSS hook — all visual state changes (glow, color, animation) are driven by `body[data-state="<state>"]` selectors in `style.css`, not by JS class manipulation.
+
+### CSS design system (`css/style.css`)
+
+Color tokens on `:root`: `--go`, `--fail`, `--result`, `--armed`, `--muted`. All state-driven colors reference these — do not hardcode hex in new rules.
+
+State-driven selectors follow the pattern `body[data-state="<state>"] #<element>`. Adding visual feedback for a new state means adding a selector here, not touching JS beyond the new `setState()` call.
+
+`@keyframes pulse-go` (arena glow breathing) and `shake` (fail feedback) are both gated behind `@media (prefers-reduced-motion: reduce)` which disables them entirely.
+
 ### Firebase / leaderboard
 
 `js/firebase-config.js` holds the hardcoded Firebase config (public project — intentional for this type of app). Scores stored at `scores/<playerName>` in Realtime Database. Only personal best is kept: `saveScore()` compares against existing entry before writing. `listenForScores()` uses `onValue` for live leaderboard updates.
 
-Player name stored in `localStorage.playerName`, prompted once on first visit.
+Player name stored in `localStorage.playerName`, prompted via `prompt()` on first visit. Known issue: `prompt()` is unstyled and blocks the thread — planned replacement is an inline form overlay.
 
 ### Deployment
 
