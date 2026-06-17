@@ -1,10 +1,20 @@
+import { db } from "./firebase-config.js";
+import { ref, set, onValue, get } from "firebase/database";
+
+
 const arena = document.getElementById("arena");
 const signalText = document.getElementById("signal-text");
 const readout = document.getElementById("readout");
 
 let state = "idle"; // Possible states: idle, armed, go, fail, result
-
 let goTimestamp = null; // Timestamp when the "go" signal is shown
+
+let playerName = localStorage.getItem("playerName");
+
+if (!playerName) {
+    playerName = prompt("Enter your name for the leaderboard:");
+    localStorage.setItem("playerName", playerName);
+}
 
 function setState(newState) {
     state = newState;
@@ -37,6 +47,21 @@ function setState(newState) {
 
 setState("idle"); // Start in the idle state
 
+function saveScore(time) {
+    const playerRef = ref(db, "scores/" + playerName);
+
+    get(playerRef).then(function (snapshot) {
+        const existing = snapshot.val();
+
+        if (!existing || time < existing.time) {
+            set(playerRef, {
+                name: playerName,
+                time: time
+            });
+        }
+    });
+}
+
 arena.addEventListener("click", function () {
     if (state === "idle" || state === "fail" || state === "result") {
         startRound();
@@ -51,6 +76,7 @@ arena.addEventListener("click", function () {
     if (state === "go") {
         const reactionTime = Math.round(performance.now() - goTimestamp);
         readout.textContent = reactionTime + "ms";
+        saveScore(reactionTime);
         setState("result");
         return;
     }
@@ -67,3 +93,34 @@ function startRound() {
         setState("go");
     }, delay);
 }
+
+const leaderboardList = document.getElementById("leaderboard-list");
+
+function listenForScores() {
+    const scoresRef = ref(db, "scores");
+
+    onValue(scoresRef, function (snapshot) {
+        const data = snapshot.val();
+
+        if (!data) {
+            leaderboardList.innerHTML = "";
+            return;
+        }
+
+        const scoresArray = Object.values(data);
+
+        scoresArray.sort(function (a, b) {
+            return a.time - b.time;
+        });
+
+        leaderboardList.innerHTML = "";
+
+        scoresArray.forEach(function (entry) {
+            const li = document.createElement("li");
+            li.textContent = entry.name + " — " + entry.time + "ms";
+            leaderboardList.appendChild(li);
+        });
+    });
+}
+
+listenForScores();
